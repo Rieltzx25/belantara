@@ -1,42 +1,43 @@
-# Belantara — Marketplace Online (Arsitektur Hybrid)
+# Belantara — Marketplace Online di atas AWS
 
 Proyek akhir mata kuliah **Big Data Infrastructure Technology**.
 
 Belantara ("rimba" dalam bahasa Indonesia — paralel dengan *Amazon* si hutan
-hujan) adalah marketplace online ala Amazon: katalog produk lintas kategori,
-pencarian + filter, keranjang, checkout, sampai pelacakan pesanan. Aplikasinya
-**benar-benar berjalan** dan bisa dipakai siapa saja secara online.
+hujan) adalah marketplace online ala Amazon: katalog lintas kategori, pencarian +
+filter, keranjang, checkout, sampai pelacakan pesanan. Aplikasinya **benar-benar
+berjalan** dan **nyata memakai AWS** (Amazon S3 + DynamoDB, gratis).
 
 Repo ini berisi dua hal yang diminta tugas:
 
-1. **Blueprint arsitektur** — `docs/blueprint-belantara.drawio` (draw.io) + penjelasan di `docs/ARCHITECTURE.md`. Versi visual juga ada langsung di website pada halaman **`/arsitektur`**.
-2. **Aplikasi nyata** — seluruh kode di repo ini.
+1. **Blueprint arsitektur** — `docs/blueprint-belantara.drawio` (draw.io, ikon AWS resmi) + `docs/ARCHITECTURE.md`. Versi visual juga ada di website pada halaman **`/arsitektur`**.
+2. **Aplikasi nyata** dengan integrasi AWS — seluruh kode di repo ini.
 
 ---
 
-## Arsitektur singkat — hybrid, hemat biaya
+## Arsitektur — 15 layanan AWS, 4 layer
 
-Blueprint lama menaruh belasan layanan berbayar di AWS. Versi ini
-**menyusutkan AWS jadi hanya VPC + 1 EC2**, dan memindahkan sisanya ke
-**jaringan lokal (On-Premise)** berbasis software gratis/open-source.
+| Layer | Layanan |
+|---|---|
+| **1 · Edge & Security** | Amazon Route 53 · Amazon CloudFront · AWS WAF · Amazon Cognito |
+| **2 · Compute** | Application Load Balancer · Amazon EC2 + Auto Scaling (multi-AZ) |
+| **3 · Data & Storage** | Amazon RDS (Multi-AZ) · ElastiCache · **DynamoDB** · **S3** · EFS |
+| **4 · Data Lake & Analytics** | Kinesis Data Firehose · S3 (Data Lake) · AWS Glue · Athena · QuickSight |
 
-| # | Layanan inti | Peran | Menggantikan |
-|---|---|---|---|
-| ① | **Nginx** | Reverse proxy: cache statis (CDN), load balancing, TLS | CloudFront + ALB |
-| ② | **Amazon EC2** | Compute Node.js/Express (satu-satunya di AWS) | — |
-| ③ | **PostgreSQL/MySQL** (Master-Slave) | Database + replikasi | RDS Multi-AZ |
-| ④ | **Redis** | Cache query & sesi | ElastiCache |
-| ⑤ | **NFS Cluster** | Shared folder antar-server (LAN) | EFS |
-| ⑥ | **NAS / Storage** | Aset, gambar, arsip order (SFTP/FTP) | S3 |
+Jaringan (bukan "layanan"): VPC 10.0.0.0/16, 2 Availability Zone, public/private subnet, Internet Gateway, NAT Gateway.
 
-Pendukung: **DNS** (registrar/BIND9, ganti Route 53), **ModSecurity + UFW/iptables**
-(keamanan perimeter), **VPC** (primitif jaringan gratis), **VPN** (sambung EC2 ↔ on-premise).
+> Detail + alur end-to-end: lihat [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
-> Detail lengkap + alur end-to-end: lihat [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+### Yang benar-benar tersambung (gratis)
+Supaya nyata memakai AWS tanpa biaya, dua layanan free-tier disambung penuh di kode:
+- **Amazon S3** — katalog & gambar (free tier 5 GB).
+- **Amazon DynamoDB** — pesanan & cart (Always-Free 25 GB).
+
+Sisanya (EC2, RDS, NAT, WAF, Route 53, Kinesis, dst.) ada di blueprint sebagai
+desain target — sebagian berbayar, jadi belum diaktifkan.
 
 ---
 
-## Menjalankan secara lokal
+## Menjalankan secara lokal (mode demo, tanpa AWS)
 
 ```bash
 npm install
@@ -44,49 +45,53 @@ copy .env.example .env      # Windows  (atau: cp .env.example .env)
 npm start
 ```
 
-Buka **http://localhost:3000**. Selesai — 39 produk langsung termuat, semua fitur
-jalan (cari, filter, keranjang, checkout, riwayat pesanan). Tidak perlu akun
-cloud, database, atau kredensial apa pun: secara default katalog dibaca dari
-berkas bundel dan order disimpan di `src/data/`.
+Buka **http://localhost:3000**. 39 produk langsung termuat; semua fitur jalan.
+Tanpa env AWS, katalog dibaca dari berkas bundel dan order disimpan lokal — jadi
+bisa didemokan tanpa akun AWS.
 
 > Butuh Node.js 18+ (diuji di Node 22).
 
 ---
 
+## Menyambungkan ke AWS (S3 + DynamoDB, gratis)
+
+1. Buat **bucket S3** (mis. `belantara-katalog`) dan siapkan nama **tabel DynamoDB** (mis. `belantara-orders`) di region `ap-southeast-1`.
+2. Buat **IAM user** dengan izin minimal ke bucket + tabel itu, ambil Access Key.
+3. Isi `.env`:
+
+   ```env
+   AWS_REGION=ap-southeast-1
+   S3_BUCKET=belantara-katalog
+   DYNAMODB_ORDERS_TABLE=belantara-orders
+   AWS_ACCESS_KEY_ID=AKIA...
+   AWS_SECRET_ACCESS_KEY=...
+   ```
+
+4. Seed sekali (upload katalog ke S3 + buat tabel DynamoDB on-demand):
+
+   ```bash
+   npm run seed:aws
+   ```
+
+5. `npm start`. Sekarang katalog dibaca dari **S3** dan setiap order disimpan ke **DynamoDB**.
+
+> Saat dijalankan di **EC2/Lambda**, kosongkan Access Key dan pasang **IAM Role** —
+> SDK mengambil kredensial otomatis (praktik yang disarankan AWS).
+
+---
+
 ## Deploy ke Vercel (demo publik gratis)
 
-Supaya website bisa dipakai siapa saja **tanpa menyalakan server di laptop**,
-aplikasi di-deploy ke **Vercel** (serverless) — ini menggantikan peran EC2 untuk
-demo. Konfigurasinya sudah disiapkan:
-
-- `api/index.js` — meng-ekspor app Express sebagai Serverless Function.
-- `vercel.json` — me-*rewrite* semua path ke fungsi tersebut.
-- `server.js` — otomatis **tidak** memanggil `app.listen` saat di serverless.
-
-**Cara deploy (lewat GitHub — paling mulus):**
+Demo publik berjalan di **Vercel** (serverless) sebagai pengganti EC2 supaya bisa
+dipakai siapa saja tanpa biaya. Konfigurasi sudah disiapkan: `api/index.js`
+(handler), `vercel.json` (rewrite), dan `server.js` otomatis tidak `listen` saat serverless.
 
 ```bash
-git init && git add . && git commit -m "Belantara hybrid"
-# buat repo kosong di GitHub, lalu:
-git remote add origin https://github.com/<user>/belantara.git
-git branch -M main && git push -u origin main
+git push          # repo sudah ter-connect; atau import di vercel.com
 ```
 
-Lalu di [vercel.com](https://vercel.com): **Add New → Project → Import** repo itu →
-**Deploy**. Tidak ada env wajib; sekali klik langsung live.
-
-**Atau lewat CLI:** `npm i -g vercel` → `vercel login` → `vercel --prod`.
-
-### Menaikkan ke skala produksi (opsional)
-
-Order pada demo serverless bersifat *ephemeral* (disimpan di memori + cache
-browser). Untuk persisten sungguhan tanpa membebani laptop, arahkan ke layanan
-free-tier lewat env — tanpa mengubah kode pemakainya:
-
-```env
-DATABASE_URL=postgres://...   # mis. Neon / Supabase  (pengganti PostgreSQL on-prem)
-REDIS_URL=redis://...         # mis. Upstash          (pengganti Redis on-prem)
-```
+Tanpa env, demo pakai data bundel. Untuk mengaktifkan S3 + DynamoDB di Vercel,
+tambahkan env yang sama seperti di atas pada **Project Settings → Environment Variables**.
 
 ---
 
@@ -94,46 +99,28 @@ REDIS_URL=redis://...         # mis. Upstash          (pengganti Redis on-prem)
 
 ```
 belantara/
-├── server.js                  # entry Express: middleware, routing, error handling
-├── api/index.js               # entry serverless (Vercel) — re-export app
-├── vercel.json                # rewrite semua request ke fungsi Express
-├── package.json · .env.example
-├── public/                    # frontend (vanilla JS, tanpa framework)
-│   ├── index.html · search.html · product.html · cart.html
-│   ├── checkout.html · order.html · account.html · sell.html
-│   ├── arsitektur.html        # halaman penjelasan arsitektur (visual)
+├── server.js                  # entry Express
+├── api/index.js               # entry serverless (Vercel)
+├── vercel.json
+├── public/                    # frontend vanilla JS
+│   ├── *.html (+ arsitektur.html)
 │   ├── css/styles.css
-│   └── js/
-│       ├── ui.js · store.js · api.js · format.js
-│       ├── arsitektur.js      # render blueprint hybrid di website
-│       └── home/search/product/cart/checkout/order/account/sell.js
+│   └── js/ (ui, store, api, arsitektur, + per-halaman)
 ├── src/
-│   ├── config/runtime.js      # deteksi runtime (serverless?) + env layanan eksternal
-│   ├── routes/                # products, orders, images (API)
-│   ├── services/              # catalog, orders, storage (logika domain)
-│   ├── lib/                   # generator gambar produk + peta foto
+│   ├── config/aws.js          # konfigurasi & klien AWS (lazy, IAM-role ready)
+│   ├── aws/
+│   │   ├── s3.js              # adapter Amazon S3
+│   │   └── dynamo.js          # adapter Amazon DynamoDB
+│   ├── routes/                # products, orders, images
+│   ├── services/              # catalog, orders, storage (pemilih AWS/fallback)
+│   ├── lib/                   # generator gambar produk
 │   └── data/catalog/products.json
+├── scripts/seed-aws.js        # upload katalog -> S3 + buat tabel DynamoDB
 └── docs/
-    ├── blueprint-belantara.drawio   # sumber diagram (draw.io)  ← utama
-    ├── blueprint-belantara.eraser   # versi eraser.io
-    └── ARCHITECTURE.md              # penjelasan blueprint + alur
+    ├── blueprint-belantara.drawio   # diagram 15 layanan (ikon AWS) ← utama
+    ├── blueprint-belantara.eraser
+    └── ARCHITECTURE.md
 ```
-
----
-
-## Cara kerja singkat
-
-- **Katalog** dimuat sekali ke memori (`src/services/catalog.js`) — ini lapisan
-  cache (peran ④ Redis) — lalu dipakai untuk listing, pencarian relevansi, filter,
-  dan produk terkait.
-- **Harga keranjang dihitung ulang di server** (`src/services/orders.js`) — angka
-  dari browser tidak dipercaya; subtotal, ongkir, dan PPN 11% dihitung dari harga
-  asli katalog supaya anti-manipulasi.
-- **Gambar produk** memakai foto asli (Unsplash/loremflickr). Kalau gagal dimuat,
-  jatuh ke gambar SVG bawaan (`/img/product/:id.svg`) — tidak pernah ada gambar rusak.
-- **Pesanan** mendapat nomor seperti `BLT-7F3K9Q2A`. Di EC2/lokal ditulis sebagai
-  berkas; di serverless disimpan di memori + di-cache di browser supaya halaman
-  konfirmasi `/order/:id` selalu bisa menampilkannya.
 
 ---
 
@@ -143,16 +130,13 @@ belantara/
 |---|---|---|
 | GET | `/api/products?q=&category=&sort=&minPrice=&maxPrice=&minRating=&free=&page=` | Listing + pencarian + filter |
 | GET | `/api/products/:id` | Detail + produk terkait |
-| GET | `/api/categories` | Kategori + jumlah produk |
-| GET | `/api/deals` · `/api/bestsellers` | Strip promo & terlaris |
+| GET | `/api/categories` · `/api/deals` · `/api/bestsellers` | Kategori / promo / terlaris |
 | POST | `/api/cart/price` | Hitung ulang total keranjang (otoritatif) |
-| POST | `/api/orders` | Buat pesanan |
-| GET | `/api/orders/:id` | Ambil pesanan |
-| GET | `/api/health` | Status & mode runtime |
+| POST | `/api/orders` · GET `/api/orders/:id` | Buat / ambil pesanan |
+| GET | `/api/health` | Status + layanan AWS aktif |
 
 ---
 
 ## Catatan
 
-Ini proyek akademik, bukan toko sungguhan. Metode pembayaran di checkout adalah
-**simulasi** — tidak ada transaksi nyata yang diproses.
+Proyek akademik, bukan toko sungguhan. Pembayaran di checkout adalah **simulasi**.

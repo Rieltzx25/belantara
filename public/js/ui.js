@@ -170,12 +170,12 @@ function footerHtml() {
       <div class="footer-bottom">
         <div>&copy; 2026 Belantara. Proyek akademik Big Data Infrastructure Technology &mdash; bukan toko sungguhan.</div>
         <div class="badges">
-          <span><a href="/arsitektur" style="color:inherit;text-decoration:none">Arsitektur hybrid</a></span>
-          <span>Amazon EC2</span>
-          <span>Nginx</span>
-          <span>PostgreSQL</span>
-          <span>Redis</span>
-          <span>NFS · NAS</span>
+          <span><a href="/arsitektur" style="color:inherit;text-decoration:none">Arsitektur AWS</a></span>
+          <span>CloudFront</span>
+          <span>EC2</span>
+          <span>S3</span>
+          <span>DynamoDB</span>
+          <span>RDS</span>
         </div>
       </div>
     </div>

@@ -1,19 +1,21 @@
 {
   "name": "belantara",
-  "version": "2.0.0",
-  "description": "Belantara - marketplace online ala Amazon. Arsitektur hybrid: Amazon EC2 (AWS) untuk compute, sisanya layanan on-premise/open-source (Nginx, PostgreSQL, Redis, NFS, NAS). Tugas akhir Big Data Infrastructure Technology.",
+  "version": "3.0.0",
+  "description": "Belantara - marketplace online ala Amazon di atas AWS. Blueprint 15 layanan (4 layer); integrasi nyata yang gratis: Amazon S3 + Amazon DynamoDB. Tugas akhir Big Data Infrastructure Technology.",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "seed:aws": "node scripts/seed-aws.js"
   },
   "keywords": [
     "marketplace",
     "ecommerce",
     "express",
-    "hybrid-cloud",
-    "on-premise",
+    "aws",
+    "s3",
+    "dynamodb",
     "vercel"
   ],
   "author": "Cliffton Hans",
@@ -22,6 +24,9 @@
     "node": ">=18"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.658.0",
+    "@aws-sdk/client-s3": "^3.658.0",
+    "@aws-sdk/lib-dynamodb": "^3.658.0",
     "compression": "^1.7.4",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",

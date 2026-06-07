@@ -1,68 +1,69 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { isServerless, dataKeys } from '../config/runtime.js';
+import { isServerless, s3Enabled, s3 as s3cfg, dynamoEnabled } from '../config/aws.js';
+import * as S3 from '../aws/s3.js';
+import * as DDB from '../aws/dynamo.js';
 
 /**
- * Lapisan tipis penyimpanan. Dulu menempel ke Amazon S3; sekarang
- * mewakili Data + Storage tier on-premise (PostgreSQL/NAS/NFS), tapi
- * dengan implementasi default yang ringan supaya bisa jalan di mana saja:
+ * Lapisan penyimpanan dengan strategi "AWS dulu, fallback aman":
  *
- *   - readCatalog()         : baca katalog produk (read-only, ikut bundle).
- *                             Di produksi -> ganti baca dari PostgreSQL replica.
- *   - saveOrder(id, order)  : simpan order. Lokal -> berkas src/data/orders.
- *                             Serverless -> memori proses (filesystem read-only).
- *                             Di produksi -> INSERT ke PostgreSQL master + arsip NAS.
- *   - loadOrder(id)         : ambil order kembali (memori dulu, baru berkas).
+ *   readCatalog()        S3 (s3Enabled) -> bundel JSON (selalu ada)
+ *   saveOrder(id,order)  DynamoDB (dynamoEnabled) -> berkas lokal (EC2) / memori (serverless)
+ *   loadOrder(id)        DynamoDB -> memori/berkas
  *
- * Semua fungsi bekerja dengan objek JS biasa; urusan (de)serialisasi
- * ditangani di sini sekali saja.
+ * Tujuannya: kalau env AWS diisi, website BENERAN pakai S3 + DynamoDB; kalau
+ * tidak, demo tetap jalan tanpa akun AWS.
  */
 
-// Katalog di-import statis (require) supaya PASTI ikut ter-bundle saat
-// di-deploy ke serverless — tidak bergantung path filesystem runtime.
 const require = createRequire(import.meta.url);
-const catalogData = require('../data/catalog/products.json');
-
-// Root data lokal untuk order. process.cwd() = root proyek baik di lokal
-// (`npm start`) maupun di serverless (/var/task) — lebih tahan banting
-// daripada __dirname kalau bundler memindah berkas.
+const bundledCatalog = require('../data/catalog/products.json');
 const dataRoot = path.join(process.cwd(), 'src', 'data');
 
-// Penampung order untuk lingkungan serverless (filesystem read-only).
-// Bertahan selama instance hangat — cukup untuk satu sesi checkout.
-// Konfirmasi pesanan tetap andal karena klien juga menyimpan salinan
-// di localStorage (lihat public/js/order.js).
+// Penampung order saat serverless tanpa DynamoDB (filesystem read-only).
 const memOrders = new Map();
 
-async function readJsonFile(relKey) {
-  const file = path.join(dataRoot, relKey);
-  const raw = await fs.readFile(file, 'utf-8');
-  return JSON.parse(raw);
-}
-
-/** Katalog produk (mewakili baca dari DB replica / NAS). */
+/** Katalog produk — dari S3 kalau aktif, kalau gagal/tidak aktif pakai bundel. */
 export async function readCatalog() {
-  return catalogData;
+  if (s3Enabled) {
+    try {
+      return await S3.getJson(s3cfg.catalogKey);
+    } catch (err) {
+      console.warn(`[s3] gagal baca katalog (${err.message}); pakai bundel.`);
+    }
+  }
+  return bundledCatalog;
 }
 
-/** Simpan satu order (mewakili tulis ke DB master + arsip ke NAS). */
+/** Simpan pesanan — DynamoDB kalau aktif, kalau tidak ke memori/berkas. */
 export async function saveOrder(id, order) {
+  if (dynamoEnabled) {
+    await DDB.putOrder(order);
+    return { stored: 'dynamodb', id };
+  }
   if (isServerless) {
     memOrders.set(id, order);
     return { stored: 'memory', id };
   }
-  const file = path.join(dataRoot, dataKeys.ordersPrefix, `${id}.json`);
+  const file = path.join(dataRoot, 'orders', `${id}.json`);
   await fs.mkdir(path.dirname(file), { recursive: true });
   await fs.writeFile(file, JSON.stringify(order, null, 2), 'utf-8');
-  return { stored: 'local', id, path: file };
+  return { stored: 'local', id };
 }
 
-/** Ambil order kembali. */
+/** Ambil pesanan kembali. */
 export async function loadOrder(id) {
+  if (dynamoEnabled) {
+    try {
+      return await DDB.getOrderItem(id);
+    } catch {
+      return null;
+    }
+  }
   if (memOrders.has(id)) return memOrders.get(id);
   try {
-    return await readJsonFile(`${dataKeys.ordersPrefix}${id}.json`);
+    const raw = await fs.readFile(path.join(dataRoot, 'orders', `${id}.json`), 'utf-8');
+    return JSON.parse(raw);
   } catch {
     return null;
   }

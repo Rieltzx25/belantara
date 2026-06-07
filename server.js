@@ -7,7 +7,7 @@ import path from 'node:path';
 import productRoutes from './src/routes/products.js';
 import orderRoutes from './src/routes/orders.js';
 import imageRoutes from './src/routes/images.js';
-import { describeMode, isServerless } from './src/config/runtime.js';
+import { describeMode, isServerless } from './src/config/aws.js';
 import { loadCatalog } from './src/services/catalog.js';
 
 const app = express();

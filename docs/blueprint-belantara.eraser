@@ -1,59 +1,73 @@
 // =====================================================================
-//  Belantara Marketplace — Arsitektur HYBRID (AWS minimal + On-Premise)
+//  Belantara Marketplace — Arsitektur AWS (15 layanan, 4 layer)
 //
-//  Penyesuaian dari blueprint lama (full-AWS) ke versi hemat biaya:
-//    - AWS menyusut: hanya VPC + EC2 yang tersisa.
-//    - 6 layanan inti dipindah ke jaringan lokal berbasis open-source.
-//    - DNS, CDN, keamanan perimeter, database, cache, file storage
-//      semuanya self-host (biaya cloud = 0).
+//  Layer 1 Edge & Security : Route 53, CloudFront, WAF, Cognito
+//  Layer 2 Compute         : ALB, EC2 (Auto Scaling, multi-AZ)
+//  Layer 3 Data & Storage  : RDS (Multi-AZ), ElastiCache, DynamoDB, S3, EFS
+//  Layer 4 Data Lake       : Kinesis Firehose, S3 (lake), Glue, Athena, QuickSight
 //
-//  Sumber utama diagram ada di blueprint-belantara.drawio (draw.io).
+//  Sumber utama diagram: blueprint-belantara.drawio (draw.io, ikon AWS).
 //  Cara pakai eraser: app.eraser.io -> New file -> Diagram-as-code
 //  (cloud architecture) -> tempel seluruh isi file ini.
 // =====================================================================
 
-title Belantara Marketplace — Arsitektur Hybrid
+title Belantara Marketplace — Arsitektur AWS
 
 Users [icon: users, label: "Pembeli & Seller"]
-DNS [icon: dns, label: "DNS - Registrar (Niagahoster/IDWebhost) atau BIND9", color: purple]
 
-OnPrem [label: "On-Premise - Jaringan Lokal (LAN), open-source", color: gray] {
-  Edge [label: "Edge & Perimeter Security", color: red] {
-    Firewall [icon: shield, label: "UFW / iptables - firewall paket"]
-    WAF [icon: shield, label: "ModSecurity (WAF)"]
-    Nginx [icon: nginx, label: "1. Nginx - Reverse Proxy, CDN/cache, Load Balancer, TLS", color: green]
+AWSCloud [icon: aws, label: "AWS Cloud"] {
+  Edge [label: "Layer 1 - Edge & Security", color: red] {
+    Route53 [icon: aws-route-53, label: "Amazon Route 53"]
+    CloudFront [icon: aws-cloudfront, label: "Amazon CloudFront"]
+    WAF [icon: aws-waf, label: "AWS WAF"]
+    Cognito [icon: aws-cognito, label: "Amazon Cognito"]
   }
-  Data [label: "Data Tier - pengganti RDS & ElastiCache", color: blue] {
-    DBMaster [icon: postgres, label: "3. PostgreSQL/MySQL MASTER (tulis)"]
-    DBSlave [icon: postgres, label: "3. PostgreSQL/MySQL SLAVE/replica (baca)"]
-    Redis [icon: redis, label: "4. Redis - cache query & sesi", color: red]
-  }
-  Storage [label: "Storage Tier - pengganti EFS & S3", color: orange] {
-    NFS [icon: server, label: "5. NFS Cluster - shared folder antar-server (LAN)"]
-    NAS [icon: hard-drive, label: "6. NAS / Storage Server - aset, gambar, order (SFTP/FTP)"]
-  }
-}
-
-VPN [icon: aws-vpn-gateway, label: "Site-to-Site VPN / SSH Tunnel"]
-
-AWSCloud [icon: aws, label: "AWS Cloud (menyusut)", color: gray] {
-  Region [icon: aws, label: "Region ap-southeast-1", color: gray] {
+  Region [icon: aws, label: "Region ap-southeast-1 (Singapore)"] {
     VPC [icon: aws-vpc, label: "VPC 10.0.0.0/16", color: blue] {
-      Subnet [label: "Public Subnet 10.0.1.0/24"] {
-        EC2 [icon: aws-ec2, label: "2. Amazon EC2 - Node.js (Public IP, tanpa NAT GW)"]
+      IGW [icon: aws-internet-gateway, label: "Internet Gateway"]
+      ALB [icon: aws-elastic-load-balancing, label: "Application Load Balancer"]
+      ASG [icon: aws-auto-scaling, label: "EC2 Auto Scaling"]
+      AZ1 [label: "Availability Zone 1a"] {
+        NAT1 [icon: aws-nat-gateway, label: "NAT Gateway"]
+        EC2A [icon: aws-ec2, label: "EC2 Node.js"]
+        CacheA [icon: aws-elasticache, label: "ElastiCache"]
+        RDSP [icon: aws-rds, label: "RDS Primary"]
       }
+      AZ2 [label: "Availability Zone 1b"] {
+        NAT2 [icon: aws-nat-gateway, label: "NAT Gateway"]
+        EC2B [icon: aws-ec2, label: "EC2 Node.js"]
+        CacheB [icon: aws-elasticache, label: "ElastiCache"]
+        RDSS [icon: aws-rds, label: "RDS Standby (Multi-AZ)"]
+      }
+    }
+    S3 [icon: aws-simple-storage-service, label: "Amazon S3 (katalog, gambar)", color: green]
+    DynamoDB [icon: aws-dynamodb, label: "Amazon DynamoDB (order, cart)"]
+    EFS [icon: aws-elastic-file-system, label: "Amazon EFS (shared)", color: green]
+    Lake [label: "Layer 4 - Data Lake & Analytics", color: purple] {
+      Kinesis [icon: aws-kinesis-data-firehose, label: "Kinesis Data Firehose"]
+      S3Lake [icon: aws-simple-storage-service, label: "Amazon S3 (Data Lake)"]
+      Glue [icon: aws-glue, label: "AWS Glue"]
+      Athena [icon: aws-athena, label: "Amazon Athena"]
+      QuickSight [icon: aws-quicksight, label: "Amazon QuickSight"]
     }
   }
 }
 
-Users > DNS: 1. resolve domain
-Users > Firewall: 2. HTTPS
-Firewall > WAF
-WAF > Nginx
-Nginx > EC2: 3. reverse proxy + LB (via VPN)
-EC2 > DBMaster: 4. tulis
-EC2 > DBSlave: 5. baca
-DBMaster > DBSlave: replikasi
-EC2 > Redis: 6. cache
-EC2 > NFS: 7. shared files
-EC2 > NAS: 8. gambar & aset (SFTP)
+Users > CloudFront: HTTPS
+Route53 > CloudFront: DNS
+CloudFront > WAF
+CloudFront > IGW: /api
+Cognito > EC2A: auth
+IGW > ALB
+ALB > EC2A
+ALB > EC2B
+EC2A > RDSP
+EC2A > CacheA
+EC2A > DynamoDB: order/cart
+EC2A > S3: objek
+RDSP > RDSS: Multi-AZ
+EC2B > Kinesis: events
+Kinesis > S3Lake
+S3Lake > Glue
+Glue > Athena
+Athena > QuickSight
