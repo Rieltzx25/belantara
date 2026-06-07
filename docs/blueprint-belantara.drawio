@@ -5,82 +5,68 @@
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- ===================== JUDUL ===================== -->
-        <mxCell id="title" value="Belantara Marketplace — Arsitektur Hybrid (AWS minimal + On-Premise open-source)" style="text;html=1;fontSize=20;fontStyle=1;fontColor=#1B2733;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="40" y="20" width="1100" height="34" as="geometry" />
-        </mxCell>
-        <mxCell id="subtitle" value="Hanya 2 layanan tersisa di AWS (VPC + EC2). 6 layanan inti ①–⑥ dipindah ke jaringan lokal berbasis software gratis. DNS &amp; keamanan perimeter ditangani sendiri." style="text;html=1;fontSize=12;fontColor=#56616C;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="40" y="52" width="1300" height="22" as="geometry" />
+        <mxCell id="title" value="Belantara — Arsitektur Hybrid" style="text;html=1;fontSize=20;fontStyle=1;fontColor=#1B2733;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="24" width="700" height="34" as="geometry" />
         </mxCell>
 
-        <!-- ===================== PENGGUNA ===================== -->
         <mxCell id="users" value="Pembeli &amp; Seller" style="sketch=0;outlineConnect=0;fontColor=#1B2733;gradientColor=none;fillColor=#1B2733;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;aspect=fixed;shape=mxgraph.aws4.users;" vertex="1" parent="1">
           <mxGeometry x="50" y="520" width="78" height="78" as="geometry" />
         </mxCell>
-        <mxCell id="dns" value="DNS&#10;Registrar (Niagahoster /&#10;IDWebhost) atau BIND9 mandiri" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE7F6;strokeColor=#5E35B1;fontColor=#311B92;fontSize=11;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="300" width="170" height="78" as="geometry" />
-        </mxCell>
-        <mxCell id="dnsbadge" value="pendukung" style="text;html=1;fontSize=9;fontColor=#7E57C2;align=center;" vertex="1" parent="1">
-          <mxGeometry x="30" y="380" width="170" height="16" as="geometry" />
+        <mxCell id="dns" value="DNS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE7F6;strokeColor=#5E35B1;fontColor=#311B92;fontSize=13;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="312" width="150" height="60" as="geometry" />
         </mxCell>
 
-        <!-- ===================== KOTAK ON-PREMISE ===================== -->
-        <mxCell id="onprem" value="On-Premise — Jaringan Lokal (LAN)  ·  software gratis / open-source  ·  biaya cloud = 0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F4F7FA;strokeColor=#5B6B7B;dashed=1;dashPattern=8 6;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontColor=#37474F;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="onprem" value="On-Premise — Jaringan Lokal (LAN)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F4F7FA;strokeColor=#5B6B7B;dashed=1;dashPattern=8 6;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontColor=#37474F;fontSize=13;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="240" y="100" width="940" height="980" as="geometry" />
         </mxCell>
 
-        <!-- Perimeter / Edge -->
-        <mxCell id="edgegrp" value="Edge &amp; Perimeter Security" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#90A4AE;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontColor=#607D8B;fontSize=12;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="270" y="160" width="880" height="190" as="geometry" />
+        <mxCell id="edgegrp" value="Edge &amp; Perimeter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#90A4AE;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontColor=#607D8B;fontSize=12;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="270" y="160" width="880" height="180" as="geometry" />
         </mxCell>
-        <mxCell id="fw" value="UFW / iptables&#10;Firewall paket" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDECEA;strokeColor=#C0392B;fontColor=#7B241C;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="300" y="220" width="160" height="90" as="geometry" />
+        <mxCell id="fw" value="UFW / iptables" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDECEA;strokeColor=#C0392B;fontColor=#7B241C;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="300" y="215" width="160" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="waf" value="ModSecurity (WAF)&#10;saring serangan web&#10;(SQLi, XSS, dll.)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDECEA;strokeColor=#C0392B;fontColor=#7B241C;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="500" y="220" width="180" height="90" as="geometry" />
+        <mxCell id="waf" value="ModSecurity (WAF)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDECEA;strokeColor=#C0392B;fontColor=#7B241C;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="500" y="215" width="180" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="nginx" value="① Nginx — Reverse Proxy&#10;CDN &amp; cache statis · Load Balancer · TLS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="720" y="215" width="400" height="100" as="geometry" />
+        <mxCell id="nginx" value="Nginx" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="215" width="400" height="80" as="geometry" />
         </mxCell>
 
-        <!-- Data tier -->
-        <mxCell id="datagrp" value="Data Tier — Database &amp; Cache (pengganti RDS Multi-AZ &amp; ElastiCache)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#90A4AE;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontColor=#607D8B;fontSize=12;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="270" y="430" width="880" height="250" as="geometry" />
+        <mxCell id="datagrp" value="Data Tier" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#90A4AE;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontColor=#607D8B;fontSize=12;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="270" y="430" width="880" height="240" as="geometry" />
         </mxCell>
-        <mxCell id="dbmaster" value="③ PostgreSQL / MySQL&#10;MASTER (tulis)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="300" y="500" width="210" height="110" as="geometry" />
+        <mxCell id="dbmaster" value="PostgreSQL / MySQL&#10;Master" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="495" width="210" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="dbslave" value="③ PostgreSQL / MySQL&#10;SLAVE / Replica (baca)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="560" y="500" width="210" height="110" as="geometry" />
+        <mxCell id="dbslave" value="PostgreSQL / MySQL&#10;Slave" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="560" y="495" width="210" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="redis" value="④ Redis Server&#10;cache query &amp; sesi" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C2185B;fontColor=#880E4F;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="900" y="500" width="200" height="110" as="geometry" />
+        <mxCell id="redis" value="Redis" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C2185B;fontColor=#880E4F;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="900" y="495" width="200" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="repl" value="replikasi Master → Slave" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;dashed=1;strokeColor=#1565C0;fontColor=#1565C0;fontSize=10;" edge="1" parent="1" source="dbmaster" target="dbslave">
+        <mxCell id="repl" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;dashed=1;strokeColor=#1565C0;" edge="1" parent="1" source="dbmaster" target="dbslave">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- Storage tier -->
-        <mxCell id="storegrp" value="Storage Tier — Shared Folder &amp; Object (pengganti EFS &amp; S3)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#90A4AE;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontColor=#607D8B;fontSize=12;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="270" y="730" width="880" height="220" as="geometry" />
+        <mxCell id="storegrp" value="Storage Tier" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#90A4AE;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontColor=#607D8B;fontSize=12;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="270" y="730" width="880" height="210" as="geometry" />
         </mxCell>
-        <mxCell id="nfs" value="⑤ NFS Cluster&#10;Network File System&#10;shared folder antar-server (LAN)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9A825;fontColor=#E65100;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="320" y="800" width="240" height="110" as="geometry" />
+        <mxCell id="nfs" value="NFS Cluster" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9A825;fontColor=#E65100;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="795" width="240" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="nas" value="⑥ NAS / Storage Server&#10;aset katalog · gambar · arsip order&#10;akses via SFTP / FTP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9A825;fontColor=#E65100;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="640" y="800" width="280" height="110" as="geometry" />
+        <mxCell id="nas" value="NAS / Storage Server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9A825;fontColor=#E65100;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="795" width="280" height="100" as="geometry" />
         </mxCell>
 
-        <!-- ===================== JEMBATAN VPN ===================== -->
-        <mxCell id="vpn" value="Site-to-Site VPN /&#10;SSH Tunnel terenkripsi" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.vpn_gateway;sketch=0;outlineConnect=0;fontColor=#1B2733;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;aspect=fixed;" vertex="1" parent="1">
+        <mxCell id="vpn" value="VPN" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.vpn_gateway;sketch=0;outlineConnect=0;fontColor=#1B2733;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;" vertex="1" parent="1">
           <mxGeometry x="1230" y="380" width="64" height="64" as="geometry" />
         </mxCell>
 
-        <!-- ===================== KOTAK AWS (menyusut) ===================== -->
         <mxCell id="cloud" value="AWS Cloud" style="fillColor=none;strokeColor=#232F3E;dashed=0;verticalAlign=top;fontColor=#232F3E;whiteSpace=wrap;html=1;fontSize=13;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;align=left;spacingLeft=30;" vertex="1" parent="1">
           <mxGeometry x="1380" y="200" width="340" height="420" as="geometry" />
         </mxCell>
-        <mxCell id="region" value="Region — ap-southeast-1 (Singapore)" style="fillColor=none;strokeColor=#00A4A6;dashed=1;verticalAlign=top;fontColor=#147EBA;whiteSpace=wrap;html=1;fontSize=11;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_region;align=left;spacingLeft=28;" vertex="1" parent="1">
+        <mxCell id="region" value="Region ap-southeast-1" style="fillColor=none;strokeColor=#00A4A6;dashed=1;verticalAlign=top;fontColor=#147EBA;whiteSpace=wrap;html=1;fontSize=11;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_region;align=left;spacingLeft=28;" vertex="1" parent="1">
           <mxGeometry x="1410" y="245" width="280" height="345" as="geometry" />
         </mxCell>
         <mxCell id="vpc" value="VPC 10.0.0.0/16" style="fillColor=none;strokeColor=#8C4FFF;dashed=0;verticalAlign=top;fontColor=#8C4FFF;whiteSpace=wrap;html=1;fontSize=11;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_vpc;align=left;spacingLeft=28;" vertex="1" parent="1">
@@ -89,18 +75,14 @@
         <mxCell id="subnet" value="Public Subnet 10.0.1.0/24" style="fillColor=#E9F3E6;strokeColor=#7AA116;verticalAlign=top;fontColor=#248814;whiteSpace=wrap;html=1;fontSize=10;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_public_subnet;align=left;spacingLeft=26;" vertex="1" parent="1">
           <mxGeometry x="1470" y="345" width="180" height="190" as="geometry" />
         </mxCell>
-        <mxCell id="ec2" value="② Amazon EC2&#10;Node.js / Express&#10;(Public IP langsung,&#10;tanpa NAT Gateway)" style="sketch=0;outlineConnect=0;fontColor=#1B2733;gradientColor=none;fillColor=#ED7100;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ec2;" vertex="1" parent="1">
-          <mxGeometry x="1525" y="380" width="70" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="awsnote" value="Yang TERSISA di AWS hanya VPC + EC2.&#10;NAT Gateway, ALB, Auto Scaling, IGW berbayar,&#10;RDS, ElastiCache, EFS, S3, CloudFront, Route 53 — DIBUANG." style="text;html=1;fontSize=10;fontColor=#B0341C;align=center;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry x="1370" y="630" width="360" height="60" as="geometry" />
+        <mxCell id="ec2" value="Amazon EC2" style="sketch=0;outlineConnect=0;fontColor=#1B2733;gradientColor=none;fillColor=#ED7100;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ec2;" vertex="1" parent="1">
+          <mxGeometry x="1525" y="385" width="70" height="70" as="geometry" />
         </mxCell>
 
-        <!-- ===================== EDGE / ALUR ===================== -->
-        <mxCell id="f1" value="1 · resolve domain" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;dashed=1;strokeColor=#5E35B1;fontColor=#5E35B1;fontSize=10;" edge="1" parent="1" source="users" target="dns">
+        <mxCell id="f1" value="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;dashed=1;strokeColor=#5E35B1;fontColor=#5E35B1;fontSize=12;" edge="1" parent="1" source="users" target="dns">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f2" value="2 · HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;strokeColor=#37474F;fontColor=#37474F;fontSize=11;" edge="1" parent="1" source="users" target="fw">
+        <mxCell id="f2" value="2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;strokeColor=#37474F;fontColor=#37474F;fontSize=12;" edge="1" parent="1" source="users" target="fw">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="f3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;strokeColor=#C0392B;" edge="1" parent="1" source="fw" target="waf">
@@ -109,28 +91,23 @@
         <mxCell id="f4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;strokeColor=#C0392B;" edge="1" parent="1" source="waf" target="nginx">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f5" value="3 · reverse proxy + load balance&#10;(lewat VPN ke EC2)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;strokeColor=#2E7D32;fontColor=#1B5E20;fontSize=10;" edge="1" parent="1" source="nginx" target="ec2">
+        <mxCell id="f5" value="3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;strokeColor=#2E7D32;fontColor=#1B5E20;fontSize=12;" edge="1" parent="1" source="nginx" target="ec2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f6" value="4 · tulis (master)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;startArrow=open;strokeColor=#1565C0;fontColor=#1565C0;fontSize=10;" edge="1" parent="1" source="ec2" target="dbmaster">
+        <mxCell id="f6" value="4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;startArrow=open;strokeColor=#1565C0;fontColor=#1565C0;fontSize=12;" edge="1" parent="1" source="ec2" target="dbmaster">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f7" value="5 · baca (replica)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;startArrow=open;dashed=1;strokeColor=#1565C0;fontColor=#1565C0;fontSize=10;" edge="1" parent="1" source="ec2" target="dbslave">
+        <mxCell id="f7" value="5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;startArrow=open;dashed=1;strokeColor=#1565C0;fontColor=#1565C0;fontSize=12;" edge="1" parent="1" source="ec2" target="dbslave">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f8" value="6 · cache" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;startArrow=open;strokeColor=#C2185B;fontColor=#C2185B;fontSize=10;" edge="1" parent="1" source="ec2" target="redis">
+        <mxCell id="f8" value="6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;startArrow=open;strokeColor=#C2185B;fontColor=#C2185B;fontSize=12;" edge="1" parent="1" source="ec2" target="redis">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f9" value="7 · shared files (NFS)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;startArrow=open;strokeColor=#F9A825;fontColor=#E65100;fontSize=10;" edge="1" parent="1" source="ec2" target="nfs">
+        <mxCell id="f9" value="7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;startArrow=open;strokeColor=#F9A825;fontColor=#E65100;fontSize=12;" edge="1" parent="1" source="ec2" target="nfs">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f10" value="8 · gambar &amp; aset (SFTP)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;startArrow=open;strokeColor=#F9A825;fontColor=#E65100;fontSize=10;" edge="1" parent="1" source="ec2" target="nas">
+        <mxCell id="f10" value="8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;startArrow=open;strokeColor=#F9A825;fontColor=#E65100;fontSize=12;" edge="1" parent="1" source="ec2" target="nas">
           <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- ===================== LEGENDA ===================== -->
-        <mxCell id="legend" value="Legenda&#10;①–⑥  6 layanan inti (self-host, gratis)&#10;putus-putus ungu  = lookup DNS&#10;hijau  = jalur reverse-proxy Nginx&#10;biru  = database (tulis/baca + replikasi)&#10;merah muda  = cache Redis&#10;kuning  = storage (NFS / NAS-SFTP)&#10;EC2 ↔ on-prem semuanya lewat VPN terenkripsi" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;fillColor=#FFFFFF;strokeColor=#B0BEC5;fontColor=#37474F;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="1380" y="720" width="350" height="170" as="geometry" />
         </mxCell>
 
       </root>
