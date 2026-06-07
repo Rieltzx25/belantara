@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import { isServerless, dataKeys } from '../config/runtime.js';
 
 /**
@@ -19,8 +19,15 @@ import { isServerless, dataKeys } from '../config/runtime.js';
  * ditangani di sini sekali saja.
  */
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataRoot = path.resolve(__dirname, '..', 'data');
+// Katalog di-import statis (require) supaya PASTI ikut ter-bundle saat
+// di-deploy ke serverless — tidak bergantung path filesystem runtime.
+const require = createRequire(import.meta.url);
+const catalogData = require('../data/catalog/products.json');
+
+// Root data lokal untuk order. process.cwd() = root proyek baik di lokal
+// (`npm start`) maupun di serverless (/var/task) — lebih tahan banting
+// daripada __dirname kalau bundler memindah berkas.
+const dataRoot = path.join(process.cwd(), 'src', 'data');
 
 // Penampung order untuk lingkungan serverless (filesystem read-only).
 // Bertahan selama instance hangat — cukup untuk satu sesi checkout.
@@ -36,7 +43,7 @@ async function readJsonFile(relKey) {
 
 /** Katalog produk (mewakili baca dari DB replica / NAS). */
 export async function readCatalog() {
-  return readJsonFile(dataKeys.catalog);
+  return catalogData;
 }
 
 /** Simpan satu order (mewakili tulis ke DB master + arsip ke NAS). */

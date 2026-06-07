@@ -3,7 +3,6 @@ import express from 'express';
 import compression from 'compression';
 import morgan from 'morgan';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import productRoutes from './src/routes/products.js';
 import orderRoutes from './src/routes/orders.js';
@@ -11,7 +10,6 @@ import imageRoutes from './src/routes/images.js';
 import { describeMode, isServerless } from './src/config/runtime.js';
 import { loadCatalog } from './src/services/catalog.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -35,7 +33,9 @@ app.get('/api/health', (_req, res) => {
 });
 
 // --- Aset statis (css, js, gambar) ---
-const publicDir = path.join(__dirname, 'public');
+// process.cwd() = root proyek di lokal maupun serverless (/var/task) —
+// tahan banting kalau bundler memindah berkas (__dirname bisa bergeser).
+const publicDir = path.join(process.cwd(), 'public');
 // maxAge 0 + etag: browser selalu revalidasi, jadi perubahan css/js langsung kebaca.
 app.use(express.static(publicDir, { extensions: ['html'], maxAge: 0, etag: true }));
 
