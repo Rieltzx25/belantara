@@ -29,7 +29,7 @@
           <mxGeometry x="240" y="100" width="940" height="980" as="geometry" />
         </mxCell>
 
-        <!-- ---- Perimeter / Edge ---- -->
+        <!-- Perimeter / Edge -->
         <mxCell id="edgegrp" value="Edge &amp; Perimeter Security" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#90A4AE;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontColor=#607D8B;fontSize=12;fontStyle=2;" vertex="1" parent="1">
           <mxGeometry x="270" y="160" width="880" height="190" as="geometry" />
         </mxCell>
@@ -43,7 +43,7 @@
           <mxGeometry x="720" y="215" width="400" height="100" as="geometry" />
         </mxCell>
 
-        <!-- ---- Data tier ---- -->
+        <!-- Data tier -->
         <mxCell id="datagrp" value="Data Tier — Database &amp; Cache (pengganti RDS Multi-AZ &amp; ElastiCache)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#90A4AE;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontColor=#607D8B;fontSize=12;fontStyle=2;" vertex="1" parent="1">
           <mxGeometry x="270" y="430" width="880" height="250" as="geometry" />
         </mxCell>
@@ -60,7 +60,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- ---- Storage tier ---- -->
+        <!-- Storage tier -->
         <mxCell id="storegrp" value="Storage Tier — Shared Folder &amp; Object (pengganti EFS &amp; S3)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#90A4AE;dashed=1;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontColor=#607D8B;fontSize=12;fontStyle=2;" vertex="1" parent="1">
           <mxGeometry x="270" y="730" width="880" height="220" as="geometry" />
         </mxCell>
