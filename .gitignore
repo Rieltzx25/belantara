@@ -9,3 +9,5 @@ Thumbs.db
 dist/
 # berkas pesanan yang ditulis saat mode lokal (tanpa S3)
 src/data/orders/
+
+.vercel
