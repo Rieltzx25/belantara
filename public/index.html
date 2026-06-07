@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Belantara — Marketplace Online, Belanja Apa Aja</title>
+  <meta name="description" content="Belantara: marketplace online untuk belanja elektronik, fashion, kebutuhan rumah, dan lainnya. Gratis ongkir, banyak promo, pembayaran aman.">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b6b3a'/><path d='M8 24c0-9 5-16 17-18-1 11-7 17-17 18z' fill='%23f6a623'/></svg>">
+</head>
+<body>
+  <div id="app-header"></div>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="eyebrow">Rimba belanja Indonesia</div>
+        <h1>Cari apa aja, ketemu di Belantara.</h1>
+        <p>Dari gadget terbaru sampai kebutuhan dapur. Ribuan produk, harga jujur, gratis ongkir buat banyak item.</p>
+        <a class="btn btn-primary btn-lg" href="/search">Jelajahi Produk</a>
+        <a class="btn btn-ghost btn-lg" href="/search?sort=bestseller" style="margin-left:10px">Lihat Terlaris</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Belanja per Kategori</h2></div>
+      <div class="cat-strip" id="cat-strip"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2><span class="flash">⚡ Flash Sale</span></h2>
+        <a href="/search">Lihat semua &rsaquo;</a>
+      </div>
+      <div class="deal-strip" id="deal-strip"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Produk Terlaris Minggu Ini</h2>
+        <a href="/search?sort=bestseller">Lihat semua &rsaquo;</a>
+      </div>
+      <div class="grid" id="best-grid"></div>
+    </section>
+
+    <div id="showcases"></div>
+  </main>
+
+  <div id="app-footer"></div>
+  <noscript><p style="text-align:center;padding:20px">Belantara butuh JavaScript untuk berjalan. Aktifkan JavaScript di browser-mu.</p></noscript>
+  <script type="module" src="/js/home.js"></script>
+</body>
+</html>
