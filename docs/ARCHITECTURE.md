@@ -43,15 +43,15 @@ Infrastruktur jaringan (bukan "layanan"): **VPC 10.0.0.0/16**, **2 Availability 
 6. Event (order, view) dikirim ke **Kinesis Firehose** → **S3 Data Lake**.
 7. **Glue** meng-ETL, **Athena** query SQL, **QuickSight** menampilkan dashboard.
 
-## Yang benar-benar tersambung di kode (gratis)
+## Integrasi AWS di kode (gratis)
 
-Agar website **nyata memakai AWS tanpa biaya**, dua layanan free-tier disambung penuh;
-sisanya tetap di blueprint sebagai desain target.
+Dua layanan free-tier **diintegrasikan penuh di kode** (AWS SDK asli, bukan stub) dan
+aktif otomatis begitu kredensial AWS diisi; sisanya tetap di blueprint sebagai desain target.
 
 | Service | Status | Realisasi di kode |
 |---|---|---|
-| **Amazon S3** | ✅ tersambung (free tier) | `src/aws/s3.js` — baca katalog dari bucket (`S3_CATALOG_KEY`) |
-| **Amazon DynamoDB** | ✅ tersambung (always-free) | `src/aws/dynamo.js` — simpan/baca pesanan (tabel `DYNAMODB_ORDERS_TABLE`) |
+| **Amazon S3** | ✅ terintegrasi — aktif saat env diisi (free tier) | `src/aws/s3.js` — baca katalog dari bucket (`S3_CATALOG_KEY`) |
+| **Amazon DynamoDB** | ✅ terintegrasi — aktif saat env diisi (always-free) | `src/aws/dynamo.js` — simpan/baca pesanan (tabel `DYNAMODB_ORDERS_TABLE`) |
 | EC2 / Vercel | runtime | `server.js` (+ `api/index.js` utk serverless) |
 | RDS, ElastiCache, EFS, Route53, CloudFront, WAF, Cognito, ALB, Kinesis, Glue, Athena, QuickSight | blueprint | infra/IaC — sebagian berbayar, belum diaktifkan |
 

@@ -84,7 +84,7 @@ const FLOW = [
 
 function svcCard(s) {
   const cls = s.live ? 'svc live' : 'svc plan';
-  const tag = s.live ? 'tersambung · gratis' : 'blueprint';
+  const tag = s.live ? 'terintegrasi · gratis' : 'blueprint';
   return `<div class="${cls}"><b>${s.n}</b><small>${s.d}</small><span class="tag">${tag}</span></div>`;
 }
 
@@ -101,11 +101,12 @@ function render() {
   </section>
 
   <div class="callout green">
-    <span class="pico">✅</span>
-    <div><b>Yang benar-benar tersambung sekarang (gratis):</b> <b>Amazon S3</b> (katalog &amp; gambar)
-      dan <b>Amazon DynamoDB</b> (pesanan). Keduanya punya free tier, diakses tanpa VPC, jadi
-      website ini <b>nyata memakai AWS</b> tanpa biaya. Sisanya ada di blueprint sebagai desain
-      target (beberapa berbayar, jadi belum diaktifkan).</div>
+    <span class="pico">⚙️</span>
+    <div><b>Terintegrasi penuh di kode (siap pakai):</b> <b>Amazon S3</b> (katalog &amp; gambar)
+      dan <b>Amazon DynamoDB</b> (pesanan) — memakai AWS SDK asli, bukan stub. Keduanya free tier &amp;
+      tanpa VPC, jadi <b>aktif otomatis</b> begitu kredensial AWS diisi. Demo publik ini sementara
+      berjalan <b>mode fallback</b> (data bundel) supaya nol biaya. Sisanya ada di blueprint sebagai
+      desain target (sebagian berbayar, belum diaktifkan).</div>
   </div>
 
   <div class="layers">
@@ -117,7 +118,7 @@ function render() {
       </div>`).join('')}
   </div>
   <div class="legend2">
-    <span><span class="dot" style="background:#167a3c"></span>tersambung &amp; gratis (S3, DynamoDB)</span>
+    <span><span class="dot" style="background:#167a3c"></span>terintegrasi di kode &amp; gratis (S3, DynamoDB)</span>
     <span><span class="dot" style="background:#d9b13b"></span>blueprint / desain target</span>
   </div>
 

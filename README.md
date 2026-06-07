@@ -5,7 +5,8 @@ Proyek akhir mata kuliah **Big Data Infrastructure Technology**.
 Belantara ("rimba" dalam bahasa Indonesia — paralel dengan *Amazon* si hutan
 hujan) adalah marketplace online ala Amazon: katalog lintas kategori, pencarian +
 filter, keranjang, checkout, sampai pelacakan pesanan. Aplikasinya **benar-benar
-berjalan** dan **nyata memakai AWS** (Amazon S3 + DynamoDB, gratis).
+berjalan**, dengan **integrasi AWS (Amazon S3 + DynamoDB) tertanam di kode** yang
+aktif begitu kredensial AWS diisi.
 
 Repo ini berisi dua hal yang diminta tugas:
 
@@ -27,11 +28,13 @@ Jaringan (bukan "layanan"): VPC 10.0.0.0/16, 2 Availability Zone, public/private
 
 > Detail + alur end-to-end: lihat [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
-### Yang benar-benar tersambung (gratis)
-Supaya nyata memakai AWS tanpa biaya, dua layanan free-tier disambung penuh di kode:
+### Integrasi AWS di kode (S3 + DynamoDB)
+Dua layanan free-tier **diintegrasikan penuh di kode** (AWS SDK asli, bukan stub),
+aktif otomatis begitu kredensial AWS diisi:
 - **Amazon S3** — katalog & gambar (free tier 5 GB).
 - **Amazon DynamoDB** — pesanan & cart (Always-Free 25 GB).
 
+Demo publik berjalan **mode fallback** (data bundel) supaya nol biaya tanpa akun AWS.
 Sisanya (EC2, RDS, NAT, WAF, Route 53, Kinesis, dst.) ada di blueprint sebagai
 desain target — sebagian berbayar, jadi belum diaktifkan.
 
